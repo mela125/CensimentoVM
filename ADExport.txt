@@ -1,0 +1,16 @@
+# Importa il modulo Active Directory
+Import-Module ActiveDirectory
+
+# Ottieni tutti i computer da Active Directory
+$computers = Get-ADComputer -Filter * -Property OperatingSystem
+
+# Crea una lista di oggetti personalizzati con i dettagli desiderati
+$computerDetails = $computers | Select-Object OperatingSystem
+
+# Specifica il percorso del file CSV
+$csvPath = "C:\Path\To\Your\Output\Computers.csv"
+
+# Esporta i dettagli dei computer in un file CSV
+$computerDetails | Export-Csv -Path $csvPath -NoTypeInformation
+
+Write-Host "Dettagli dei computer esportati in $csvPath"

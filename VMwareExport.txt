@@ -1,0 +1,33 @@
+# Importa il modulo VMware PowerCLI
+Import-Module VMware.PowerCLI
+
+# Disabilita il controllo di certificato SSL (opzionale, solo se necessario)
+Set-PowerCLIConfiguration -InvalidCertificateAction Ignore -Confirm:$false
+
+# Specifica le credenziali per il vCenter
+$vcenterServer = "vcenter.example.com"
+$username = "your-username"
+$password = "your-password"
+
+# Connetti al vCenter
+Connect-VIServer -Server $vcenterServer -User $username -Password $password
+
+# Ottieni tutte le macchine virtuali
+$vms = Get-VM
+
+# Crea una lista per memorizzare le informazioni delle VM
+$vmInfoList = @()
+
+# Aggiungi le informazioni delle VM alla lista
+foreach ($vm in $vms) {
+    $vmInfo = [PSCustomObject]@{
+        OSVersion  = $vm.Guest.OSFullName
+    }
+    $vmInfoList += $vmInfo
+}
+
+# Esporta le informazioni delle VM in un file CSV
+$vmInfoList | Export-Csv -Path "VMs_OS_Versions.csv" -NoTypeInformation
+
+# Disconnetti dal vCenter
+Disconnect-VIServer -Server $vcenterServer -Confirm:$false
